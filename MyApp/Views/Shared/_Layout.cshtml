@@ -1,0 +1,104 @@
+@{ 
+    var debug = HostContext.DebugMode;
+    var min = debug ? "" : "[hash].min";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MyApp</title>
+
+    @Html.BundleCss(new BundleOptions {
+        Sources = {
+            "!/assets/css/default.css",
+            "/assets/css/",
+            "/css/buttons.css",
+            "/css/svg-auth.css",
+            "/css/svg-icons.css",
+            "/css/app.css",
+        },
+        SaveToDisk = !debug,
+        OutputTo = $"/css/lib.bundle{min}.css"
+    })
+
+    @Html.BundleCss(new BundleOptions {
+        Sources = {
+            "/assets/css/default.css",
+        },
+        Minify = !debug,
+        Cache = !debug,
+        SaveToDisk = !debug,
+        OutputTo = $"/css/bundle{min}.css"
+    })
+
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="svg-logo svg-lg mr-1"></i>
+                    MyApp
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    @Html.Navbar(ViewUtils.NavItems, new NavOptions { 
+                        NavClass = "navbar-nav flex-grow-1",
+                        NavLinkClass = "nav-link text-dark",
+                    })
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container mt-2">
+            &copy; @DateTime.Now.Year - MyApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+  <script>exports = window</script>
+  @Html.BundleJs(new BundleOptions {
+      Sources = {
+          "!/assets/js/dtos.js",
+          "!/assets/js/default.js",
+          "/assets/js/jquery.min.js",
+          "/assets/js/",
+      },
+      SaveToDisk = !debug,
+      OutputTo = $"/js/lib.bundle{min}.js"
+  })
+    
+  @Html.BundleJs(new BundleOptions {
+      Sources = {
+          "/assets/js/dtos.js",
+          "/assets/js/default.js",
+      },
+      Minify = !debug,
+      Cache = !debug,
+      SaveToDisk = !debug,
+      OutputTo = $"/js/bundle{min}.js"
+  })
+
+  <script>
+    lib = window["@@servicestack/client"];
+    for (var k in lib) { window[k] = lib[k] }
+    client = new JsonServiceClient('/');
+  </script>
+
+  @RenderSection("scripts", required: false)
+
+</body>
+</html>
